@@ -258,10 +258,14 @@ export type BinaryTarget =
           | ZipPackageFormat
           | "asar"
           | "godot-pck"
+          | "unityfs"
+          | "uimage"
           | "dmg"
           | "pkg"
           | "intel-hex"
-          | "srec";
+          | "srec"
+          | "esp-image"
+          | "fit";
       })
   | (BinaryTargetIdentity &
       NonExecutableMetadata & {

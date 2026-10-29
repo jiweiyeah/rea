@@ -6,11 +6,15 @@ import { AsarArtifactReader } from "./AsarArtifactReader.js";
 import type { ArtifactReader } from "./ArtifactReader.js";
 import { HexRecordArtifactReader } from "./HexRecordArtifactReader.js";
 import { DirectoryArtifactReader } from "./DirectoryArtifactReader.js";
+import { EspImageArtifactReader } from "./EspImageArtifactReader.js";
+import { FitArtifactReader } from "./FitArtifactReader.js";
 import { GodotPckArtifactReader } from "./GodotPckArtifactReader.js";
 import { MachOSliceArtifactReader } from "./MachOSliceArtifactReader.js";
 import { NativeDmgArtifactReader } from "./NativeDmgArtifactReader.js";
 import { NodeSeaArtifactReader } from "./NodeSeaArtifactReader.js";
 import { PyInstallerArtifactReader } from "./PyInstallerArtifactReader.js";
+import { UImageArtifactReader } from "./UImageArtifactReader.js";
+import { UnityFsArtifactReader } from "./UnityFsArtifactReader.js";
 import { ZipArtifactReader } from "./ZipArtifactReader.js";
 import type { ArtifactOccurrence } from "../domain/artifactGraph.js";
 import {
@@ -26,10 +30,14 @@ export type ArtifactReaderFormat =
   | "pyinstaller"
   | "node-sea"
   | "godot-pck"
+  | "unityfs"
+  | "uimage"
   | "intel-hex"
   | "srec"
+  | "fit"
   | "mach-o-universal"
   | "dmg"
+  | "esp-image"
   | ZipPackageFormat;
 
 interface ArtifactReaderConstruction {
@@ -108,9 +116,15 @@ export function createArtifactReader(
           ? admission
           : rootSource,
       );
+    case "uimage":
+      return new UImageArtifactReader(path, rootSource);
+    case "unityfs":
+      return new UnityFsArtifactReader(path, rootSource);
     case "intel-hex":
     case "srec":
       return new HexRecordArtifactReader(path, format, rootSource);
+    case "fit":
+      return new FitArtifactReader(path, rootSource);
     case "mach-o-universal":
       return new MachOSliceArtifactReader(
         path,
@@ -120,6 +134,8 @@ export function createArtifactReader(
       );
     case "dmg":
       return new NativeDmgArtifactReader(path, options.environment);
+    case "esp-image":
+      return new EspImageArtifactReader(path, rootSource);
     default:
       return undefined;
   }
